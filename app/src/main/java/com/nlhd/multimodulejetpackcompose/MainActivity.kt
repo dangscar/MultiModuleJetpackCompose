@@ -24,10 +24,15 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.nlhd.multimodulejetpackcompose.screens.CharacterDetailsScreen
+import com.nlhd.multimodulejetpackcompose.screens.CharacterEpisodeScreen
 import com.nlhd.multimodulejetpackcompose.ui.theme.MultiModuleJetpackComposeTheme
 import com.nlhd.network.KtorClient
-import com.nlhd.network.TestFile
 import com.nlhd.network.domain.models.character.Character
 
 class MainActivity : ComponentActivity() {
@@ -48,9 +53,27 @@ class MainActivity : ComponentActivity() {
                 window.navigationBarColor = Color.Black.toArgb()
                 controller.isAppearanceLightNavigationBars = false
             }
-            MultiModuleJetpackComposeTheme {
-                CharacterDetailsScreen(characterId = 100, ktorClient = ktorClient)
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "character_details") {
+                composable("character_details") {
+                    CharacterDetailsScreen(characterId = 1, ktorClient = ktorClient) {
+                        navController.navigate("character_episodes/$it")
+                    }
+                }
+
+                composable(
+                    route = "character_episodes/{characterId}",
+                    arguments = listOf(
+                        navArgument("characterId") {
+                            type = NavType.IntType
+                        }
+                    )
+                ) { backStackEntry ->
+                    val characterId = backStackEntry.arguments?.getInt("characterId") ?: 0
+                    CharacterEpisodeScreen(characterId)
+                }
             }
+
         }
     }
 }

@@ -42,7 +42,8 @@ import com.nlhd.network.domain.models.character.CharacterStatus
 @Composable
 fun CharacterDetailsScreen(
     characterId: Int,
-    ktorClient: KtorClient
+    ktorClient: KtorClient,
+    onClickViewEpisode: (Int) -> Unit
 ) {
     var character by remember { mutableStateOf<Character?>(null) }
     LaunchedEffect(key1 = Unit) {
@@ -90,7 +91,7 @@ fun CharacterDetailsScreen(
                             CharacterCategory("Episodes", character!!.episode.size.toString())
                             Spacer(Modifier.height(10.dp))
                             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                                Button(onClick = {},
+                                Button(onClick = { onClickViewEpisode(characterId)},
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(40.dp),

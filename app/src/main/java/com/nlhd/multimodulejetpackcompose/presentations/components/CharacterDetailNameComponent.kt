@@ -1,4 +1,4 @@
-package com.nlhd.multimodulejetpackcompose.components
+package com.nlhd.multimodulejetpackcompose.presentations.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

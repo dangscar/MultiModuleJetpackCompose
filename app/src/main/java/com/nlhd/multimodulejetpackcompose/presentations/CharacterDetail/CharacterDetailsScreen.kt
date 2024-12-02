@@ -29,8 +29,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.nlhd.multimodulejetpackcompose.components.CharacterCategory
-import com.nlhd.multimodulejetpackcompose.components.CharacterDetailNameComponent
+import com.nlhd.multimodulejetpackcompose.presentations.components.CharacterCategory
+import com.nlhd.multimodulejetpackcompose.presentations.components.CharacterDetailNameComponent
 import com.nlhd.network.KtorClient
 import com.nlhd.network.domain.models.character.Character
 

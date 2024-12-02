@@ -1,8 +1,11 @@
 package com.nlhd.network
 
 import com.nlhd.network.domain.models.character.Character
+import com.nlhd.network.domain.models.episode.Episode
 import com.nlhd.network.remote.character.RemoteCharacter
 import com.nlhd.network.remote.character.toDomainCharacter
+import com.nlhd.network.remote.episode.RemoteEpisode
+import com.nlhd.network.remote.episode.toDomainEpisode
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -40,6 +43,15 @@ class KtorClient {
         return safeApiCall {
             client.get("character/$id").body<RemoteCharacter>().toDomainCharacter().also {
                 characterCache[id] = it
+            }
+        }
+    }
+
+    suspend fun getEpisodes(episodeId: List<Int>): ApiOperation<List<Episode>> {
+        return safeApiCall {
+            val idsCommaSeparated = episodeId.joinToString(",") //Chuyển đổi mảng thành chuỗi
+            client.get("episode/$idsCommaSeparated").body<List<RemoteEpisode>>().map {
+                it.toDomainEpisode()
             }
         }
     }

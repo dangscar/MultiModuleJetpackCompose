@@ -1,7 +1,6 @@
-package com.nlhd.multimodulejetpackcompose.screens
+package com.nlhd.multimodulejetpackcompose.presentations.CharacterDetail
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,16 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.nlhd.multimodulejetpackcompose.R
 import com.nlhd.multimodulejetpackcompose.components.CharacterCategory
 import com.nlhd.multimodulejetpackcompose.components.CharacterDetailNameComponent
-import com.nlhd.network.ApiOperation
 import com.nlhd.network.KtorClient
 import com.nlhd.network.domain.models.character.Character
-import com.nlhd.network.domain.models.character.CharacterStatus
 
 @Composable
 fun CharacterDetailsScreen(

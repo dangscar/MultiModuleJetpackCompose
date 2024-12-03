@@ -48,11 +48,26 @@ class KtorClient {
     }
 
     suspend fun getEpisodes(episodeId: List<Int>): ApiOperation<List<Episode>> {
-        return safeApiCall {
-            val idsCommaSeparated = episodeId.joinToString(",") //Chuyển đổi mảng thành chuỗi
-            client.get("episode/$idsCommaSeparated").body<List<RemoteEpisode>>().map {
-                it.toDomainEpisode()
+
+        return if (episodeId.size == 1) {
+            getEpisode(episodeId[0]).mapSuccess {
+                listOf(it)
             }
+        } else {
+            safeApiCall {
+                val idsCommaSeparated = episodeId.joinToString(",") //Chuyển đổi mảng thành chuỗi
+                client.get("episode/$idsCommaSeparated").body<List<RemoteEpisode>>().map {
+                    it.toDomainEpisode()
+                }
+            }
+        }
+
+
+    }
+
+    suspend fun getEpisode(episodeId: Int): ApiOperation<Episode> {
+        return safeApiCall {
+            client.get("episode/$episodeId").body<RemoteEpisode>().toDomainEpisode()
         }
     }
 
@@ -82,5 +97,12 @@ sealed interface ApiOperation<T> {
             block(exception)
         }
         return this
+    }
+
+    fun <R> mapSuccess(transform: (T) -> R): ApiOperation<R> {
+        return when (this) {
+            is Success -> Success(transform(data))
+            is Failure -> Failure(exception)
+        }
     }
 }

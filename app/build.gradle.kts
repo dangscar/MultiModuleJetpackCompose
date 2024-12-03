@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     id("kotlinx-serialization")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -85,4 +87,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel:2.8.7")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
+
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
 }

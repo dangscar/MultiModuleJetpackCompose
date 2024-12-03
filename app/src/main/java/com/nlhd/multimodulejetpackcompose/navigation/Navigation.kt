@@ -9,11 +9,12 @@ import androidx.navigation.navArgument
 import com.nlhd.multimodulejetpackcompose.presentations.CharacterEpisode.CharacterEpisodeScreen
 import com.nlhd.multimodulejetpackcompose.presentations.CharacterDetail.CharacterDetailsScreen
 import com.nlhd.network.KtorClient
+import javax.inject.Inject
 
-private val ktorClient = KtorClient()
+
 
 @Composable
-fun Navigation() {
+fun Navigation(ktorClient: KtorClient) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "character_details") {
         composable("character_details") {

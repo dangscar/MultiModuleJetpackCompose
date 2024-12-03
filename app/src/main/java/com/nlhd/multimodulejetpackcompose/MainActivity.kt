@@ -15,8 +15,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowInsetsControllerCompat
 import com.nlhd.multimodulejetpackcompose.navigation.Navigation
 import com.nlhd.multimodulejetpackcompose.ui.theme.MultiModuleJetpackComposeTheme
+import com.nlhd.network.KtorClient
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var ktorClient: KtorClient
 
     @SuppressLint("InvalidColorHexValue")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +40,7 @@ class MainActivity : ComponentActivity() {
                 controller.isAppearanceLightNavigationBars = false
             }
 
-            Navigation()
+            Navigation(ktorClient)
 
         }
     }

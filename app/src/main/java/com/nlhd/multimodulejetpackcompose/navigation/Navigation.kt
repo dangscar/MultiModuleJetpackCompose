@@ -18,7 +18,7 @@ fun Navigation(ktorClient: KtorClient) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "character_details") {
         composable("character_details") {
-            CharacterDetailsScreen(characterId = 1, ktorClient = ktorClient) {
+            CharacterDetailsScreen {
                 navController.navigate("character_episodes/$it")
             }
         }

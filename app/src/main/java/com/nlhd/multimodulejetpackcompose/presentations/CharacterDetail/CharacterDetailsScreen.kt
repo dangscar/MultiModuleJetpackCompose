@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.nlhd.multimodulejetpackcompose.presentations.components.CharacterCategory
 import com.nlhd.multimodulejetpackcompose.presentations.components.CharacterDetailNameComponent
@@ -36,57 +38,58 @@ import com.nlhd.network.domain.models.character.Character
 
 @Composable
 fun CharacterDetailsScreen(
-    characterId: Int,
-    ktorClient: KtorClient,
+    viewModel: CharacterDetailsViewModel = hiltViewModel(),
     onClickViewEpisode: (Int) -> Unit
 ) {
-    var character by remember { mutableStateOf<Character?>(null) }
-    LaunchedEffect(key1 = Unit) {
-        val apiOperation = ktorClient.getCharacter(characterId)
-        apiOperation.onSuccess {
-            character = it
-        }.onFailure {
 
-        }
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getCharacter(10)
     }
+
+    val state by viewModel.internalStorageFlow.collectAsStateWithLifecycle()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color(0xFF222A35)
     ) {
 
-        when (character) {
-            null -> {
+        when (state) {
+            is CharacterDetailsViewState.Error -> {
+
+            }
+            CharacterDetailsViewState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-            else -> {
+            is CharacterDetailsViewState.Success -> {
+                val character = (state as CharacterDetailsViewState.Success).data
                 LazyColumn(modifier = Modifier.padding(it).padding(16.dp)) {
                     item {
                         Column {
-                            CharacterDetailNameComponent(characterStatus = character!!.status, displayName = character!!.name)
+                            CharacterDetailNameComponent(characterStatus = character.status, displayName = character.name)
                             Spacer(Modifier.height(10.dp))
                             AsyncImage(
-                                model = character?.image,
+                                model = character.image,
                                 contentDescription = "",
                                 modifier = Modifier
                                     .fillMaxWidth().aspectRatio(1f)
                                     .clip(RoundedCornerShape(12.dp)),
 
-                            )
+                                )
                             Spacer(Modifier.height(10.dp))
-                            CharacterCategory("Last known location", character!!.location.name)
+                            CharacterCategory("Last known location", character.location.name)
                             Spacer(Modifier.height(10.dp))
-                            CharacterCategory("Species", character!!.species)
+                            CharacterCategory("Species", character.species)
                             Spacer(Modifier.height(10.dp))
-                            CharacterCategory("Gender", character!!.gender.displayName)
+                            CharacterCategory("Gender", character.gender.displayName)
                             Spacer(Modifier.height(10.dp))
-                            CharacterCategory("Origin", character!!.origin.name)
+                            CharacterCategory("Origin", character.origin.name)
                             Spacer(Modifier.height(10.dp))
-                            CharacterCategory("Episodes", character!!.episode.size.toString())
+                            CharacterCategory("Episodes", character.episode.size.toString())
                             Spacer(Modifier.height(10.dp))
                             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                                Button(onClick = { onClickViewEpisode(characterId)},
+                                Button(onClick = { onClickViewEpisode(character.id)},
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(40.dp),
@@ -100,9 +103,10 @@ fun CharacterDetailsScreen(
                         }
                     }
                 }
-
             }
         }
+
+
 
 
     }

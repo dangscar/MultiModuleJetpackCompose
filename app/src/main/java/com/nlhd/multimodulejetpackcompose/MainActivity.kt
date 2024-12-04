@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowInsetsControllerCompat
 import com.nlhd.multimodulejetpackcompose.navigation.Navigation
+import com.nlhd.multimodulejetpackcompose.presentations.CharacterDetail.CharacterDetailsViewModel
 import com.nlhd.multimodulejetpackcompose.ui.theme.MultiModuleJetpackComposeTheme
 import com.nlhd.network.KtorClient
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
                 window.navigationBarColor = Color.Black.toArgb()
                 controller.isAppearanceLightNavigationBars = false
             }
+
 
             Navigation(ktorClient)
 

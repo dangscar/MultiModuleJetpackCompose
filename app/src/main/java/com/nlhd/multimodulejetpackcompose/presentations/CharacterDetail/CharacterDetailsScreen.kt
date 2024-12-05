@@ -38,12 +38,13 @@ import com.nlhd.network.domain.models.character.Character
 
 @Composable
 fun CharacterDetailsScreen(
+    characterId: Int,
     viewModel: CharacterDetailsViewModel = hiltViewModel(),
     onClickViewEpisode: (Int) -> Unit
 ) {
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.getCharacter(10)
+        viewModel.getCharacter(characterId)
     }
 
     val state by viewModel.internalStorageFlow.collectAsStateWithLifecycle()

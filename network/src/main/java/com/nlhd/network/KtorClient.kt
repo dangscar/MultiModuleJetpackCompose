@@ -1,9 +1,12 @@
 package com.nlhd.network
 
 import com.nlhd.network.domain.models.character.Character
+import com.nlhd.network.domain.models.character.CharacterPage
 import com.nlhd.network.domain.models.episode.Episode
 import com.nlhd.network.remote.character.RemoteCharacter
+import com.nlhd.network.remote.character.RemoteCharacterPage
 import com.nlhd.network.remote.character.toDomainCharacter
+import com.nlhd.network.remote.character.toDomainCharacterPage
 import com.nlhd.network.remote.episode.RemoteEpisode
 import com.nlhd.network.remote.episode.toDomainEpisode
 import io.ktor.client.HttpClient
@@ -70,6 +73,11 @@ class KtorClient {
             client.get("episode/$episodeId").body<RemoteEpisode>().toDomainEpisode()
         }
     }
+
+    suspend fun getAllCharacterByPage(page: Int): CharacterPage {
+        return client.get("character?page=$page").body<RemoteCharacterPage>().toDomainCharacterPage()
+    }
+
 
     private inline fun <T> safeApiCall(apiCall: () -> T): ApiOperation<T> {
         return try {

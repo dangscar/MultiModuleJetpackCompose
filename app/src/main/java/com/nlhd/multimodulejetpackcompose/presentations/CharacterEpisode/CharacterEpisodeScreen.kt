@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CharacterEpisodeScreen(characterId: Int, ktorClient: KtorClient) {
+fun CharacterEpisodeScreen(characterId: Int, ktorClient: KtorClient, modifier: Modifier = Modifier) {
     var character by remember {
         mutableStateOf<Character?>(null)
     }
@@ -65,75 +65,63 @@ fun CharacterEpisodeScreen(characterId: Int, ktorClient: KtorClient) {
         }.onFailure {
 
         }
-
-
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xFF222A35)
-    ) {
-        if (episodes.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+    if (episodes.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        LazyColumn(
+            modifier = modifier
+        ) {
+            item {
+                CharacterDetailNameComponent(character!!.status, character!!.name)
+                Spacer(modifier = Modifier.height(10.dp))
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .padding(16.dp)
-            ) {
-                item {
-                    CharacterDetailNameComponent(character!!.status, character!!.name)
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
 
-                item {
-                    LazyRow {
-                        item {
-                            episodes.groupBy { it.seasonNumber }.forEach { mapEntry->
-                                SeasonEpRow(mapEntry.key, mapEntry.value.size)
-                                Spacer(modifier = Modifier.width(10.dp))
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-
-                item {
-                    AsyncImage(
-                        model = character!!.image,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clip(RoundedCornerShape(12.dp)),
-
-                        )
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-
-                episodes.groupBy {
-                    it.seasonNumber
-                }.forEach { mapEntry ->
-                    stickyHeader {
-                        SeasonHeader(mapEntry.key)
-                    }
+            item {
+                LazyRow {
                     item {
-                        mapEntry.value.forEach { episode ->
-                            Spacer(modifier = Modifier.height(10.dp))
-                            EpisodeComponent(episode)
-
+                        episodes.groupBy { it.seasonNumber }.forEach { mapEntry->
+                            SeasonEpRow(mapEntry.key, mapEntry.value.size)
+                            Spacer(modifier = Modifier.width(10.dp))
                         }
+                    }
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
+            item {
+                AsyncImage(
+                    model = character!!.image,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(12.dp)),
+
+                    )
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
+            episodes.groupBy {
+                it.seasonNumber
+            }.forEach { mapEntry ->
+                stickyHeader {
+                    SeasonHeader(mapEntry.key)
+                }
+                item {
+                    mapEntry.value.forEach { episode ->
+                        Spacer(modifier = Modifier.height(10.dp))
+                        EpisodeComponent(episode)
+
                     }
                 }
             }
         }
-
-
-
     }
+
 }
 
 @Composable

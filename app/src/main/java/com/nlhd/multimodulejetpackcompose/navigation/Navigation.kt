@@ -1,9 +1,14 @@
 package com.nlhd.multimodulejetpackcompose.navigation
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nlhd.multimodulejetpackcompose.presentations.CharacterEpisode.CharacterEpisodeScreen
@@ -17,33 +22,16 @@ import javax.inject.Inject
 @Composable
 fun Navigation(ktorClient: KtorClient) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "HomeScreen") {
-        composable(
-            "character_details/{characterId}",
-            arguments = listOf(
-                navArgument("characterId") {
-                    type = NavType.IntType
-                }
-            )
-        ) { navBackStackEntry ->
-            val characterId = navBackStackEntry.arguments?.getInt("characterId") ?: 0
-            CharacterDetailsScreen(characterId = characterId) {
-                navController.navigate("character_episodes/$it")
+    NavHost(navController = navController, startDestination = "Main") {
+        navigation(route = "Main", startDestination = "MainScreen") {
+            composable(route = "MainScreen") {
+                //HomeScreen(navController = navController)
+                MainScreenNavigation(ktorClient)
             }
+
+
         }
-        composable(
-            route = "character_episodes/{characterId}",
-            arguments = listOf(
-                navArgument("characterId") {
-                    type = NavType.IntType
-                }
-            )
-        ) { backStackEntry ->
-            val characterId = backStackEntry.arguments?.getInt("characterId") ?: 0
-            CharacterEpisodeScreen(characterId, ktorClient = ktorClient)
-        }
-        composable(route = "HomeScreen") {
-            HomeScreen(navController = navController)
-        }
+
+
     }
 }

@@ -36,59 +36,92 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.nlhd.multimodulejetpackcompose.presentations.CharacterDetail.CharacterDetailsScreen
+import com.nlhd.multimodulejetpackcompose.presentations.CharacterEpisode.CharacterEpisodeScreen
 import com.nlhd.multimodulejetpackcompose.presentations.CharacterGrid.CharacterItem
+import com.nlhd.network.KtorClient
 import com.nlhd.network.domain.models.character.Character
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    ktorClient: KtorClient
 ) {
+
+    val navController = rememberNavController()
     val getAllCharacter = viewModel.getAllCharacter.collectAsLazyPagingItems()
 
-    Column(
-        modifier = modifier
-    ) {
+    NavHost(navController = navController, startDestination = "home") {
+        composable(route = "home") {
+            if (getAllCharacter.loadState.refresh is LoadState.Loading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            else if (getAllCharacter.loadState.refresh is LoadState.Error) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                    Log.d("AAA", "error")
+                }
+            }
+            else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = modifier
+                ) {
+                    items(getAllCharacter.itemCount) { pos->
+                        val character = getAllCharacter[pos]
+                        character?.let {
+                            CharacterItem(character) {
+                                navController.navigate("character_details/${character.id}")
+                            }
+                        }
 
-        if (getAllCharacter.loadState.refresh is LoadState.Loading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-        else if (getAllCharacter.loadState.refresh is LoadState.Error) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-                Log.d("AAA", "error")
-            }
-        }
-        else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                items(getAllCharacter.itemCount) { pos->
-                    val character = getAllCharacter[pos]
-                    character?.let {
-                        CharacterItem(character) {
-                            navController.navigate("character_details/${character.id}")
+                    }
+                    item {
+                        if (getAllCharacter.loadState.append is LoadState.Loading) {
+                            CircularProgressIndicator()
                         }
                     }
-
-                }
-                item {
-                    if (getAllCharacter.loadState.append is LoadState.Loading) {
-                        CircularProgressIndicator()
-                    }
                 }
             }
         }
+        composable(
+            route="character_details/{characterId}",
+            arguments = listOf(
+                navArgument("characterId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { navBackStackEntry ->
+            val characterId = navBackStackEntry.arguments?.getInt("characterId") ?: 0
+            CharacterDetailsScreen(characterId = characterId, modifier = modifier) {
+                navController.navigate("character_episodes/$it")
+            }
+        }
 
+        composable(
+            route = "character_episodes/{characterId}",
+            arguments = listOf(
+                navArgument("characterId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            val characterId = backStackEntry.arguments?.getInt("characterId") ?: 0
+            CharacterEpisodeScreen(characterId, ktorClient = ktorClient, modifier = modifier)
+
+        }
     }
+
 
 }
 

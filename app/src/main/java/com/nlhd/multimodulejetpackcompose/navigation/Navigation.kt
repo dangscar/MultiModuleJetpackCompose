@@ -31,18 +31,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.nlhd.multimodulejetpackcompose.presentations.CharacterEpisode.CharacterEpisodeScreen
-import com.nlhd.multimodulejetpackcompose.presentations.CharacterDetail.CharacterDetailsScreen
+import com.nlhd.multimodulejetpackcompose.presentations.EpisodeScreen.EpisodeScreen
 import com.nlhd.multimodulejetpackcompose.presentations.HomeScreen.HomeScreen
+import com.nlhd.multimodulejetpackcompose.ui.theme.blackUi
+import com.nlhd.multimodulejetpackcompose.ui.theme.paddingSystemMedium
 import com.nlhd.network.KtorClient
-import javax.inject.Inject
 
 sealed class NavDestination(val route: String, val title: String, val icon: ImageVector) {
     data object Home: NavDestination(route = "HomeScreen", title = "Home", icon = Icons.Default.Home)
@@ -83,7 +80,7 @@ fun Navigation(ktorClient: KtorClient) {
     val currentDestination = navBackStackEntry?.destination
     Scaffold(
         modifier = Modifier.fillMaxWidth(),
-        containerColor = Color(0xFF222A35),
+        containerColor = blackUi,
         bottomBar = {
             Row(
                 modifier = Modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.navigationBars).padding(5.dp),
@@ -91,32 +88,6 @@ fun Navigation(ktorClient: KtorClient) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 listDestination.forEachIndexed { index,item->
-                    /*NavigationBarItem(
-                        selected = selectedIndex == index,
-                        icon = {
-                            Icon(item.icon, contentDescription = "")
-                        },
-                        label = {
-                            Text(item.title, style = MaterialTheme.typography.labelSmall)
-                        },
-                        onClick = {
-                            selectedIndex = index
-                            navController.navigate(route = item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.White,
-                            selectedTextColor = Color.White,
-                            indicatorColor = Color.Transparent,
-                            unselectedIconColor = Color.LightGray,
-                            unselectedTextColor = Color.LightGray
-                        )
-                    )*/
                     BottomBarItem(
                         selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                         icon = item.icon,
@@ -140,10 +111,10 @@ fun Navigation(ktorClient: KtorClient) {
     ) { paddingValues ->
         NavHost(navController = navController, startDestination = "HomeScreen") {
             composable(route = NavDestination.Home.route) {
-                HomeScreen(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp), ktorClient = ktorClient)
+                HomeScreen(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = paddingSystemMedium), ktorClient = ktorClient)
             }
             composable(route = NavDestination.Episodes.route) {
-                Text("Episode")
+                EpisodeScreen(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(paddingSystemMedium))
             }
             composable(route = NavDestination.Search.route) {
                 Text("Search")

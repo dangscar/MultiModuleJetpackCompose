@@ -1,4 +1,4 @@
-package com.nlhd.multimodulejetpackcompose.presentations.CharacterDetail
+package com.nlhd.multimodulejetpackcompose.presentations.CharacterDetailScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

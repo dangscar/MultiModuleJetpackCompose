@@ -3,12 +3,15 @@ package com.nlhd.network
 import com.nlhd.network.domain.models.character.Character
 import com.nlhd.network.domain.models.character.CharacterPage
 import com.nlhd.network.domain.models.episode.Episode
+import com.nlhd.network.domain.models.episode.EpisodePage
 import com.nlhd.network.remote.character.RemoteCharacter
 import com.nlhd.network.remote.character.RemoteCharacterPage
 import com.nlhd.network.remote.character.toDomainCharacter
 import com.nlhd.network.remote.character.toDomainCharacterPage
 import com.nlhd.network.remote.episode.RemoteEpisode
+import com.nlhd.network.remote.episode.RemoteEpisodePage
 import com.nlhd.network.remote.episode.toDomainEpisode
+import com.nlhd.network.remote.episode.toDomainEpisodePage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -51,7 +54,6 @@ class KtorClient {
     }
 
     suspend fun getEpisodes(episodeId: List<Int>): ApiOperation<List<Episode>> {
-
         return if (episodeId.size == 1) {
             getEpisode(episodeId[0]).mapSuccess {
                 listOf(it)
@@ -76,6 +78,14 @@ class KtorClient {
 
     suspend fun getAllCharacterByPage(page: Int): CharacterPage {
         return client.get("character?page=$page").body<RemoteCharacterPage>().toDomainCharacterPage()
+    }
+
+    suspend fun getAllEpisodeByPage(page: Int): EpisodePage {
+        return client.get("episode") {
+            url {
+                parameters.append("page", page.toString())
+            }
+        }.body<RemoteEpisodePage>().toDomainEpisodePage()
     }
 
 

@@ -14,4 +14,6 @@ interface CharacterRepository {
 
     fun getAllCharacterByPage(): Flow<PagingData<Character>>
 
+    fun getAllEpisodeByPage(): Flow<PagingData<Episode>>
+
 }

@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.nlhd.multimodulejetpackcompose.data.remote.CharacterPagingSource
+import com.nlhd.multimodulejetpackcompose.data.remote.EpisodePagingSource
 import com.nlhd.multimodulejetpackcompose.domain.repository.CharacterRepository
 import com.nlhd.network.ApiOperation
 import com.nlhd.network.KtorClient
@@ -20,9 +21,18 @@ class CharacterRepositoryImp(
 
     override fun getAllCharacterByPage() : Flow<PagingData<Character>> {
         return Pager(
-            config = PagingConfig(20),
+            config = PagingConfig(50),
             pagingSourceFactory = {
                 CharacterPagingSource(ktorClient)
+            }
+        ).flow
+    }
+
+    override fun getAllEpisodeByPage(): Flow<PagingData<Episode>> {
+        return Pager(
+            config = PagingConfig(50),
+            pagingSourceFactory = {
+                EpisodePagingSource(ktorClient)
             }
         ).flow
     }

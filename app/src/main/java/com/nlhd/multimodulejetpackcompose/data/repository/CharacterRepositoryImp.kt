@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.nlhd.multimodulejetpackcompose.data.remote.CharacterPagingSource
 import com.nlhd.multimodulejetpackcompose.data.remote.EpisodePagingSource
+import com.nlhd.multimodulejetpackcompose.data.remote.SearchPagingSource
 import com.nlhd.multimodulejetpackcompose.domain.repository.CharacterRepository
 import com.nlhd.network.ApiOperation
 import com.nlhd.network.KtorClient
@@ -33,6 +34,15 @@ class CharacterRepositoryImp(
             config = PagingConfig(50),
             pagingSourceFactory = {
                 EpisodePagingSource(ktorClient)
+            }
+        ).flow
+    }
+
+    override fun getAllSearchByPage(searchQuery: String): Flow<PagingData<Character>> {
+        return Pager(
+            config = PagingConfig(50),
+            pagingSourceFactory = {
+                SearchPagingSource(ktorClient, searchQuery)
             }
         ).flow
     }

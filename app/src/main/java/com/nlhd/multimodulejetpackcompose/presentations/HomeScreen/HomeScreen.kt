@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,6 +30,7 @@ import com.nlhd.multimodulejetpackcompose.connectivityState
 import com.nlhd.multimodulejetpackcompose.presentations.CharacterDetailScreen.CharacterDetailsScreen
 import com.nlhd.multimodulejetpackcompose.presentations.CharacterEpisode.CharacterEpisodeScreen
 import com.nlhd.multimodulejetpackcompose.presentations.CharacterGrid.CharacterItem
+import com.nlhd.multimodulejetpackcompose.presentations.commonConponent.TopBar
 import com.nlhd.network.KtorClient
 
 @Composable
@@ -49,34 +51,38 @@ fun HomeScreen(
 
     NavHost(navController = navController, startDestination = "home") {
         composable(route = "home") {
-            if (getAllCharacter.loadState.refresh is LoadState.Loading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-            else if (getAllCharacter.loadState.refresh is LoadState.Error) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                    Toast.makeText(LocalContext.current, "Error", Toast.LENGTH_SHORT).show()
-                }
-            }
-            else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = modifier
-                ) {
-                    items(getAllCharacter.itemCount) { pos->
-                        val character = getAllCharacter[pos]
-                        character?.let {
-                            CharacterItem(character) {
-                                navController.navigate("character_details/${character.id}")
-                            }
-                        }
-
+            Column(
+                modifier = modifier
+            ) {
+                TopBar("ALL CHARACTER")
+                if (getAllCharacter.loadState.refresh is LoadState.Loading) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
                     }
-                    item {
-                        if (getAllCharacter.loadState.append is LoadState.Loading) {
-                            CircularProgressIndicator()
+                }
+                else if (getAllCharacter.loadState.refresh is LoadState.Error) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                        Toast.makeText(LocalContext.current, "Error", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2)
+                    ) {
+                        items(getAllCharacter.itemCount) { pos->
+                            val character = getAllCharacter[pos]
+                            character?.let {
+                                CharacterItem(character) {
+                                    navController.navigate("character_details/${character.id}")
+                                }
+                            }
+
+                        }
+                        item {
+                            if (getAllCharacter.loadState.append is LoadState.Loading) {
+                                CircularProgressIndicator()
+                            }
                         }
                     }
                 }

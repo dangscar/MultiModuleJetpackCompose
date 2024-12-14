@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.nlhd.multimodulejetpackcompose.ui.theme.ResponsiveTheme
 import com.nlhd.multimodulejetpackcompose.ui.theme.blueUi
 import com.nlhd.network.domain.models.character.Character
 
@@ -48,11 +49,8 @@ fun CharacterItem(
     character: Character,
     onClickCharacter: (Character) -> Unit
 ) {
-    val configuration = LocalConfiguration.current
-    val height = configuration.screenHeightDp.dp/4
-    val width = configuration.screenWidthDp.dp/2
     Card(
-        modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable { onClickCharacter(character) },
+        modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable { onClickCharacter(character) }.padding(ResponsiveTheme.appDimensRes.small1),
         shape = ShapeDefaults.Large,
         border = BorderStroke(
             width = 1.dp,
@@ -66,7 +64,7 @@ fun CharacterItem(
                     model = character.image,
                     contentDescription = "",
                     modifier = Modifier
-                        .size(width = width, height = height)
+                        .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp)),
                     contentScale = ContentScale.Crop
                 )
@@ -76,13 +74,10 @@ fun CharacterItem(
 
             Text(
                 character.name,
-                style = MaterialTheme.typography.titleLarge.copy(
+                style = ResponsiveTheme.appTypographyRes.titleMedium.copy(
                     color = blueUi,
                     textAlign = TextAlign.Center
                 ),
-                modifier = Modifier
-                    .width(width)
-                    .padding(10.dp),
                 maxLines = 1
             )
         }
@@ -91,7 +86,7 @@ fun CharacterItem(
 }
 
 @Composable
-fun CircleStatus(modifier: Modifier = Modifier) {
+fun CircleStatus() {
     Box(
         modifier = Modifier.background(
             shape = CircleShape,

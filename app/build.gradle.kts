@@ -95,4 +95,7 @@ dependencies {
     //Paging
     implementation("androidx.paging:paging-runtime:3.3.4")
     implementation("androidx.paging:paging-compose:3.3.2")
+
+    //Window Size Class
+    implementation ("androidx.compose.material3:material3-window-size-class:1.3.1")
 }

@@ -5,6 +5,7 @@ import com.nlhd.multimodulejetpackcompose.domain.repository.CharacterRepository
 import com.nlhd.multimodulejetpackcompose.domain.usecases.CharacterUseCases
 import com.nlhd.multimodulejetpackcompose.domain.usecases.GetAllCharacterByPage
 import com.nlhd.multimodulejetpackcompose.domain.usecases.GetAllEpisodeByPage
+import com.nlhd.multimodulejetpackcompose.domain.usecases.GetAllSeachByPage
 import com.nlhd.multimodulejetpackcompose.domain.usecases.GetCharacter
 import com.nlhd.multimodulejetpackcompose.domain.usecases.GetEpisodes
 import com.nlhd.network.KtorClient
@@ -32,7 +33,8 @@ object NetworkModule {
         getCharacter = GetCharacter(repository = repository),
         getEpisodes = GetEpisodes(repository = repository),
         getAllCharacterByPage = GetAllCharacterByPage(repository = repository),
-        getAllEpisodeByPage = GetAllEpisodeByPage(repository = repository)
+        getAllEpisodeByPage = GetAllEpisodeByPage(repository = repository),
+        getAllSearchByPage = GetAllSeachByPage(repository = repository)
     )
 
 }

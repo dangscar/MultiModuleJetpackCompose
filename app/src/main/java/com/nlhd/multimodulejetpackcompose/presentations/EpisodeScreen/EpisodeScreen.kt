@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,10 +28,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.nlhd.multimodulejetpackcompose.connectivityState
+import com.nlhd.multimodulejetpackcompose.presentations.commonConponent.TopBar
+import com.nlhd.multimodulejetpackcompose.ui.theme.ResponsiveTheme
 import com.nlhd.multimodulejetpackcompose.ui.theme.blackUi
 import com.nlhd.multimodulejetpackcompose.ui.theme.blueUi
 import com.nlhd.multimodulejetpackcompose.ui.theme.paddingSystemMedium
@@ -42,60 +46,44 @@ fun EpisodeScreen(
     modifier: Modifier = Modifier,
     viewModel: EpisodeViewModel = hiltViewModel()
 ) {
-    val episodes = viewModel.getAllEpisodeByPage().collectAsLazyPagingItems()
+    val state = viewModel.state.collectAsStateWithLifecycle()
+    val episodes = state.value?.collectAsLazyPagingItems()
     val isConnected by connectivityState()
     LaunchedEffect(key1 = isConnected) {
         if (isConnected) {
-            episodes.retry()
+            episodes?.retry()
         }
     }
 
     Column(
         modifier = modifier
     ) {
-        TopBar()
-        EpisodeList(episodes)
+        TopBar("All Episode")
+        if (episodes != null) {
+            EpisodeList(episodes)
+        }
+
 
     }
 
 }
 
 @Composable
-fun TopBar() {
-    Text(
-        "All Episode",
-        style = MaterialTheme.typography.titleLarge.copy(
-            color = Color.White,
-            fontWeight = FontWeight.Bold
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = paddingSystemMedium)
-    )
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(2.dp)
-        .background(color = Color.White)
-    )
-    Spacer(modifier = Modifier.height(paddingSystemSmall))
-}
-
-@Composable
 fun StickyHeader(seasonNumber: String) {
     Box(modifier = Modifier
         .fillMaxWidth()
-        .border(1.dp, Color.White)
+        .border(1.dp, Color.White, shape = RoundedCornerShape(ResponsiveTheme.appDimensRes.border))
         .background(color = blackUi),
     ) {
         Text(
             "Season $seasonNumber",
-            style = MaterialTheme.typography.titleLarge.copy(
+            style = ResponsiveTheme.appTypographyRes.titleLarge.copy(
                 color = Color.White,
                 textAlign = TextAlign.Center
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(ResponsiveTheme.appDimensRes.small3),
             maxLines = 1
         )
     }
@@ -145,14 +133,14 @@ fun EpisodeItem(episode: Episode) {
         ) {
             Text(
                 "Episode",
-                style = MaterialTheme.typography.titleSmall.copy(
+                style = ResponsiveTheme.appTypographyRes.titleMedium.copy(
                     color = blueUi
                 ),
                 maxLines = 1
             )
             Text(
                 episode.episodeNumber.toString(),
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = ResponsiveTheme.appTypographyRes.bodyMedium.copy(
                     color = Color.White
                 ),
                 maxLines = 1
@@ -164,7 +152,7 @@ fun EpisodeItem(episode: Episode) {
         ) {
             Text(
                 episode.name,
-                style = MaterialTheme.typography.bodyLarge.copy(
+                style = ResponsiveTheme.appTypographyRes.titleMedium.copy(
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.End
@@ -173,7 +161,7 @@ fun EpisodeItem(episode: Episode) {
             )
             Text(
                 episode.airDate,
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = ResponsiveTheme.appTypographyRes.bodyMedium.copy(
                     color = Color.White,
                     textAlign = TextAlign.End
                 ),

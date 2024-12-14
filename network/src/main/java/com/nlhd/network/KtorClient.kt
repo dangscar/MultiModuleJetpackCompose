@@ -88,6 +88,15 @@ class KtorClient {
         }.body<RemoteEpisodePage>().toDomainEpisodePage()
     }
 
+    suspend fun getAllSearchByPage(page: Int, searchQuery: String): CharacterPage {
+        return client.get("character") {
+            url {
+                parameters.append("page", page.toString())
+                parameters.append("name", searchQuery)
+            }
+        }.body<RemoteCharacterPage>().toDomainCharacterPage()
+    }
+
 
     private inline fun <T> safeApiCall(apiCall: () -> T): ApiOperation<T> {
         return try {

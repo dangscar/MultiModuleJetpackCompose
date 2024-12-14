@@ -1,5 +1,6 @@
 package com.nlhd.multimodulejetpackcompose.navigation
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -28,15 +29,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.nlhd.multimodulejetpackcompose.presentations.EpisodeScreen.EpisodeScreen
 import com.nlhd.multimodulejetpackcompose.presentations.HomeScreen.HomeScreen
+import com.nlhd.multimodulejetpackcompose.presentations.SeachScreen.SeachScreen
+import com.nlhd.multimodulejetpackcompose.ui.theme.ResponsiveTheme
+import com.nlhd.multimodulejetpackcompose.ui.theme.ScreenOrientation
 import com.nlhd.multimodulejetpackcompose.ui.theme.blackUi
 import com.nlhd.multimodulejetpackcompose.ui.theme.paddingSystemMedium
 import com.nlhd.network.KtorClient
@@ -54,17 +61,32 @@ fun BottomBarItem(
     label: String,
     onClick: () -> Unit
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() },
-            onClick = onClick
-        )
-    ) {
-        Icon(icon, contentDescription = "", tint = if (selected) Color.White else Color.Gray)
-        Text(label, style = MaterialTheme.typography.labelSmall.copy(color = if (selected) Color.White else Color.Gray))
+    if (ScreenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onClick
+            )
+        ) {
+            Icon(icon, contentDescription = "", tint = if (selected) Color.White else Color.Gray)
+            Text(label, style = ResponsiveTheme.appTypographyRes.bodyMedium.copy(color = if (selected) Color.White else Color.Gray))
+        }
+    } else {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onClick
+            )
+        ) {
+            Icon(icon, contentDescription = "", tint = if (selected) Color.White else Color.Gray)
+            Text(label, style = ResponsiveTheme.appTypographyRes.bodySmall.copy(color = if (selected) Color.White else Color.Gray))
+        }
     }
+
 }
 
 
@@ -109,18 +131,19 @@ fun Navigation(ktorClient: KtorClient) {
 
         }
     ) { paddingValues ->
-        NavHost(navController = navController, startDestination = "HomeScreen") {
+        NavHost(navController = navController, startDestination = NavDestination.Home.route) {
             composable(route = NavDestination.Home.route) {
-                HomeScreen(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = paddingSystemMedium), ktorClient = ktorClient)
+                HomeScreen(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(paddingSystemMedium), ktorClient = ktorClient)
             }
             composable(route = NavDestination.Episodes.route) {
                 EpisodeScreen(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(paddingSystemMedium))
             }
             composable(route = NavDestination.Search.route) {
-                Text("Search")
+                SeachScreen(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(paddingSystemMedium))
             }
 
         }
 
     }
 }
+
